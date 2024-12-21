@@ -1,0 +1,37 @@
+package dev.iseal.sealparticleplayer.client;
+
+import dev.iseal.sealparticleplayer.client.Effekts.Effekt;
+import dev.iseal.sealparticleplayer.client.Effekts.Serializers.ScreenshakeSerializer;
+import dev.iseal.sealparticleplayer.client.Listeners.ClientNetworkingListener;
+import dev.iseal.sealparticleplayer.client.items.ParticleTestItem;
+import dev.iseal.sealparticleplayer.client.items.ScreenshakeTestItem;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import team.lodestar.lodestone.systems.screenshake.ScreenshakeInstance;
+
+public class HFPPClient implements ClientModInitializer {
+
+    public static final String MODID = "sealparticleplayer";
+
+    private final ScreenshakeTestItem screenshakeTestItem = Registry.register(
+            Registries.ITEM, new Identifier(MODID, "screenshaketest"), new ScreenshakeTestItem(new FabricItemSettings())
+    );
+
+    private final ParticleTestItem particleTestItem = Registry.register(
+            Registries.ITEM, new Identifier(MODID, "particletest"), new ParticleTestItem(new FabricItemSettings())
+    );
+
+    @Override
+    public void onInitializeClient() {
+        ClientNetworkingListener clientNetworkingListener = new ClientNetworkingListener();
+        clientNetworkingListener.initialize();
+        /*
+        for (Effekt effekt : Effekt.values()) {
+            kryo.register(effekt.getEffectClass(), effekt.getSerializer() ,effekt.getID());
+        }*/
+        UnsafeSerializer.registerClass(ScreenshakeInstance.class, new ScreenshakeSerializer(), Effekt.SCREENSHAKE.getID());
+    }
+}
