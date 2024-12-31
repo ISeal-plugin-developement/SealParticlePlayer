@@ -1,7 +1,5 @@
 package dev.iseal.sealparticleplayer.client;
 
-import dev.iseal.sealparticleplayer.client.Effekts.Effekt;
-import dev.iseal.sealparticleplayer.client.Effekts.Serializers.ScreenshakeSerializer;
 import dev.iseal.sealparticleplayer.client.Listeners.ClientNetworkingListener;
 import dev.iseal.sealparticleplayer.client.items.ParticleTestItem;
 import dev.iseal.sealparticleplayer.client.items.ScreenshakeTestItem;
@@ -28,10 +26,5 @@ public class HFPPClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientNetworkingListener clientNetworkingListener = new ClientNetworkingListener();
         clientNetworkingListener.initialize();
-        /*
-        for (Effekt effekt : Effekt.values()) {
-            kryo.register(effekt.getEffectClass(), effekt.getSerializer() ,effekt.getID());
-        }*/
-        UnsafeSerializer.registerClass(ScreenshakeInstance.class, new ScreenshakeSerializer(), Effekt.SCREENSHAKE.getID());
     }
 }

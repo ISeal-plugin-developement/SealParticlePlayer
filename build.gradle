@@ -29,6 +29,7 @@ repositories {
     maven {url = "https://maven.jamieswhiteshirt.com/libs-release"}
     maven {url = 'https://maven.ladysnake.org/releases'}
     maven {url = "https://maven.terraformersmc.com/"}
+    mavenLocal()
 }
 
 dependencies {
@@ -50,7 +51,7 @@ dependencies {
         modImplementation("io.github.fabricators_of_create.Porting-Lib:$module:$port_lib_version")
     }
     modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.rea_version}")
-    implementation("com.esotericsoftware.kryo:kryo5:${project.kryo_version}")
+    implementation("dev.iseal:ExtraKryoCodecs:${project.ekc_version}")
 }
 
 processResources {

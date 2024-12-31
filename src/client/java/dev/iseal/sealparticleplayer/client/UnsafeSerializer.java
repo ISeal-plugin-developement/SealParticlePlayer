@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.Serializer;
 import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
+import dev.iseal.ExtraKryoCodecs.ExtraKryoCodecs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,14 +14,16 @@ import java.util.logging.Level;
 
 public class UnsafeSerializer {
 
-    private static Kryo kryo;
+    public static Kryo kryo;
 
     // housekeeping
-    private static void checkKryo() {
+    public static void checkKryo() {
         if (kryo != null) {
             return;
         }
         kryo = new Kryo();
+        ExtraKryoCodecs.init(kryo, true);
+        ExtraKryoCodecs.initClient();
         kryo.setRegistrationRequired(false);
     }
 
