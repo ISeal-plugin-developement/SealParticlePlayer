@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.8-SNAPSHOT'
     id 'maven-publish'
+    id 'com.gradleup.shadow' version '9.0.0-beta4'
 }
 
 version = project.mod_version
@@ -14,7 +15,7 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        "hadesfightparticleplayer" {
+        "sealparticleplayer" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
@@ -29,7 +30,11 @@ repositories {
     maven {url = "https://maven.jamieswhiteshirt.com/libs-release"}
     maven {url = 'https://maven.ladysnake.org/releases'}
     maven {url = "https://maven.terraformersmc.com/"}
-    mavenLocal()
+    maven { url 'https://jitpack.io' }
+    if (project.useLocalRepoForEKC) {
+        mavenLocal()
+    }
+    mavenCentral()
 }
 
 dependencies {
@@ -51,19 +56,48 @@ dependencies {
         modImplementation("io.github.fabricators_of_create.Porting-Lib:$module:$port_lib_version")
     }
     modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.rea_version}")
-    implementation("dev.iseal:ExtraKryoCodecs:${project.ekc_version}")
+
+    //implementation("dev.iseal:ExtraKryoCodecs:${project.ekc_version}")
+    // use this when dev ^^
+
+    implementation("com.github.ISeal-plugin-developement:ExtraKryoCodecs:${project.ekc_version}")
 }
+
+shadowJar {
+
+    archiveFileName = "${project.file_name}-${project.mod_version}.jar"
+
+    from remapJar.outputs
+
+    // Include only the specific library in the final JAR
+    dependencies {
+        //include(dependency("dev.iseal:ExtraKryoCodecs:${project.ekc_version}"))
+        // use this when dev ^^
+
+        include(dependency("com.github.ISeal-plugin-developement:ExtraKryoCodecs:${project.ekc_version}"))
+        //TODO: make this better. it fucking sucks.
+        include(dependency("com.esotericsoftware.kryo:kryo5:5.6.2"))
+    }
+    relocate "dev.iseal.ExtraKryoCodecs", "libs.dev.iseal.ExtraKryoCodecs"
+}
+
+jar.finalizedBy shadowJar
+
+//build.dependsOn remapJar
+//jar.dependsOn shadowJar
 
 processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
+    inputs.property "lodestone_version", project.lodestone_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
+                "loader_version": project.loader_version,
+                "lodestone_version": project.lodestone_version
     }
 }
 
